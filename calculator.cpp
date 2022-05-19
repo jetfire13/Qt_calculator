@@ -42,8 +42,8 @@ Calculator::Calculator()
 
     MyButton* clearMemoryButton = createButton("MC",   SLOT(clearMemory()));
     MyButton* readMemoryButton = createButton("MR",   SLOT(readMemory()));
-    MyButton* setMemoryButton = createButton("M+",   SLOT(addToMemory()));
-    MyButton* addToMemoryButton = createButton("M-",   SLOT(MinToMemory()));
+    MyButton* subtractMemoryButton = createButton("M-",   SLOT(subtractMemory()));
+    MyButton* addToMemoryButton = createButton("M+",   SLOT(addToMemory()));
 
     MyButton* divisionButton = createButton(m_division_sign,   SLOT(doubleOperatorClicked()));
     MyButton* timesButton = createButton(m_times_sign,   SLOT(doubleOperatorClicked()));
@@ -65,8 +65,8 @@ Calculator::Calculator()
 
     mainLayout->addWidget(clearMemoryButton, 4, 0);
     mainLayout->addWidget(readMemoryButton, 5, 0);
-    mainLayout->addWidget(setMemoryButton, 6, 0);
     mainLayout->addWidget(addToMemoryButton, 7, 0);
+    mainLayout->addWidget(subtractMemoryButton, 6, 0);
 
     for (int i = 1; i < 10; ++i)
     {
@@ -106,7 +106,6 @@ void Calculator::digitClicked()
 {
    MyButton* btn = (MyButton*)sender();
    int digit = btn->text().toUInt();
-   qDebug() << "digit pressed" << digit;
 
    if (m_display_down->text() == "0")
    {
@@ -230,19 +229,37 @@ void Calculator::clearAll()
 }
 void Calculator::clearMemory()
 {
-
+    m_sum_in_memory = 0.0;
 }
 void Calculator::readMemory()
 {
-
+    m_display_up->clear();
+    m_sign->clear();
+    m_display_down->setText(QString::number(m_sum_in_memory));
 }
 void Calculator::addToMemory()
 {
-
+    if (!m_pending_operation.isEmpty())
+    {
+        equalClicked();
+        m_sum_in_memory += m_display_down->text().toDouble();
+    }else
+    {
+        m_sum_in_memory += m_display_down->text().toDouble();
+        m_display_down->setText("0");
+    }
 }
-void Calculator::minToMemory()
+void Calculator::subtractMemory()
 {
-
+    if (!m_pending_operation.isEmpty())
+    {
+        equalClicked();
+        m_sum_in_memory -= m_display_down->text().toDouble();
+    }else
+    {
+        m_sum_in_memory -= m_display_down->text().toDouble();
+        m_display_down->setText("0");
+    }
 }
 
 void Calculator::abortOperation()

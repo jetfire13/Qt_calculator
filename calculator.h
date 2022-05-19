@@ -30,7 +30,7 @@ private slots:
     void clearMemory();
     void readMemory();
     void addToMemory();
-    void minToMemory();
+    void subtractMemory();
 private:
     MyButton* createButton(const QString& text, const char* member);
 
